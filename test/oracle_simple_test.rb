@@ -3,6 +3,11 @@ require 'db/oracle'
 
 class OracleSimpleTest < Test::Unit::TestCase
   include SimpleTestMethods
+
+  def test_select_alias_should_honor_alias_name_casing
+    result = ActiveRecord::Base.connection.select_all %Q{SELECT COUNT(*) AS "Count" FROM entries}
+    assert_equal 'Count', result.first.keys.first
+  end
 end
 
 class OracleSpecificTest < Test::Unit::TestCase

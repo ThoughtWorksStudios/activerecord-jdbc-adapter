@@ -573,11 +573,12 @@ public class RubyJdbcConnection extends RubyObject {
      * Assumption 2: It is always safe to convert all upper case names since it appears that
      * some adapters do not report StoresUpper/Lower/Mixed correctly (am I right postgres/mysql?).
      */
+    private static final java.util.regex.Pattern HAS_SMALL = java.util.regex.Pattern.compile("[a-z]");
     public static String caseConvertIdentifierForRails(DatabaseMetaData metadata, String value)
             throws SQLException {
         if (value == null) return null;
 
-        return metadata.storesUpperCaseIdentifiers() ? value.toLowerCase() : value;
+        return metadata.storesUpperCaseIdentifiers() && !HAS_SMALL.matcher(value).find() ? value.toLowerCase() : value;
     }
 
     /**
